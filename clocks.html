@@ -41,22 +41,56 @@
       </section>
 
       <section id="timer-page" class="page">
+        <audio id="alarmAudio" src="alarm.mp3"></audio>
         <!-- Timer content goes here -->
         <div class="timerClock">
           <div class="timerDisplay">00:00:00</div>
           <div class="presetButtons">
-            <button value="180">3 minutes</button>
-            <button value="300">5 minutes</button>
-            <button value="600">10 minutes</button>
-            <button id="customTimeButton">Custom time</button>
+            <button class="timerButton" value="60">1 minutes</button>
+            <button class="timerButton" value="180">3 minutes</button>
+            <button class="timerButton" value="300">5 minutes</button>
+            <button id="customTimeButton" class="timerButton">
+              Custom time
+            </button>
           </div>
           <div class="timerButtons">
-            <button class="timerButton" id="start">Start</button>
             <button class="timerButton" id="pause">Pause</button>
             <button class="timerButton" id="reset">Reset</button>
           </div>
         </div>
       </section>
     </main>
+
+    <div id="modal" class="modal-outer hidden">
+      <div class="modal-inner">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Set Time</h2>
+            <span id="modalClose" class="close">&times;</span>
+          </div>
+          <div class="modal-body">
+            <form id="customTimeForm">
+              <label for="hours">Hours</label>
+              <input type="number" id="hours" name="hours" min="0" max="23" />
+              <label for="minutes">Minutes</label>
+              <input
+                type="number"
+                id="minutes"
+                name="minutes"
+                min="0"
+                max="59" />
+              <label for="seconds">Seconds</label>
+              <input
+                type="number"
+                id="seconds"
+                name="seconds"
+                min="0"
+                max="59" />
+              <input id="modalSubmit" type="submit" value="Submit" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

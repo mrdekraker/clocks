@@ -11,7 +11,7 @@ body {
   height: 100vh;
   width: 100vw;
   display: flex;
-  /* justify-content: space-between; */
+  /* justify-content: center; */
   align-items: center;
   flex-direction: column;
   padding: 1rem 0;
@@ -36,6 +36,7 @@ nav ul {
 }
 
 nav ul li a {
+  font-size: 2rem;
   margin: 0 5rem;
   text-decoration: none;
   color: #f5f5f5;
@@ -45,34 +46,24 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* height: 75%; */
+  flex-direction: column;
+  margin: 1rem 0;
   width: 65%;
   border: 2px solid #fff;
-  margin: 3rem;
+  margin: 2rem;
   padding: 2rem;
   background: hsla(0, 0%, 0%, 0.2);
   box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
     rgba(0, 0, 0, 0.22) 0px 10px 10px;
 }
 
-main section p {
+#landing {
   font-size: 1.5rem;
   font-weight: 600;
   color: #f5f5f5;
   text-align: center;
 }
 
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-.activeLink {
-  text-decoration: underline;
-}
 /* ANALOG CLOCK */
 .clock {
   background: rgba(169, 169, 169, 0.35);
@@ -123,7 +114,6 @@ main section p {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 5rem auto;
   padding: 2rem;
 }
 
@@ -152,6 +142,9 @@ main section p {
 }
 
 .timerDisplay {
+  border: 2px solid #f5f5f5;
+  background: hsla(0, 0%, 100%, 0.1);
+  width: 30rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -161,9 +154,24 @@ main section p {
   text-align: center;
 }
 
+.timerButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.presetButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
 .timerButton {
+  margin: 0.5rem;
   text-align: center;
-  width: 6rem;
+  width: 10rem;
   height: 2rem;
   font-size: 1.2rem;
   border: 1px solid #f5f5f5;
@@ -174,7 +182,121 @@ main section p {
   transition: all 0.2s ease-in-out;
 }
 
+#start {
+  background: hsla(114, 99%, 30%, 0.2);
+}
+
+#start:hover {
+  background: hsla(114, 99%, 30%, 0.9);
+  color: #1b1b1b;
+}
+
+#pause {
+  background: hsla(59, 100%, 50%, 0.2);
+}
+#pause:hover {
+  background: hsla(59, 100%, 50%, 0.9);
+  color: #1b1b1b;
+}
+
+#reset {
+  background: hsla(0, 100%, 50%, 0.2);
+}
+
+#reset:hover {
+  background: hsla(0, 100%, 50%, 0.9);
+  color: #1b1b1b;
+}
+
 .timerButton:hover {
   background: hsla(100, 100%, 100%, 0.8);
   color: #1b1b1b;
+}
+
+/* HIDE */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.activeLink {
+  text-decoration: underline;
+}
+
+/* MODAL */
+.modal-outer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: hsla(0, 0%, 0%, 0.85);
+  z-index: 99999;
+}
+
+.modal-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #f5f5f5;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 50vh;
+  width: 50vw;
+  color: white;
+  background: hsla(0, 0%, 56%, 0.8);
+  box-shadow: rgba(165, 165, 165, 0.3) 0px 19px 38px,
+    rgba(85, 85, 85, 0.22) 0px 15px 12px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+.close:hover {
+  transition: all 0.2s ease-in-out;
+  color: #fff;
+  background-color: #f44336;
+}
+
+label {
+  font-size: 1.5rem;
+}
+
+input {
+  margin-right: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+#modalSubmit {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
 }

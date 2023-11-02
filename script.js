@@ -10,6 +10,13 @@ const analogLink = document.getElementById("analog");
 const digitalLink = document.getElementById("digital");
 const timerLink = document.getElementById("timer");
 
+const customButton = document.getElementById("customTimeButton");
+
+const modal = document.getElementById("modal");
+const modalClose = document.getElementById("modalClose");
+const modalSubmit = document.getElementById("modalSubmit");
+
+
 // ANALOG CLOCK
 analogLink.addEventListener("click", () => {
   showPage(analogPage);
@@ -58,6 +65,9 @@ digitalLink.addEventListener("click", () => {
     let minutes = date.getMinutes();
     let seconds = date.getSeconds();
 
+    // Add a leading zero to the minutes string if it has a length of 1
+    minutes = minutes.toString().padStart(2, "0");
+
     // Add a leading zero to the seconds string if it has a length of 1
     seconds = seconds.toString().padStart(2, "0");
 
@@ -81,9 +91,107 @@ timerLink.addEventListener("click", () => {
   activeLink(timerLink);
   document.body.style.background =
     "url('./assets/time.jpg') no-repeat center center fixed";
+  timer();
 });
 
 
+const timer = () => {
+  const minute = document.querySelector('[value="60"]');
+  const three = document.querySelector('[value="180"]');
+  const five = document.querySelector('[value="300"]');
+  const resetButton = document.getElementById("reset");
+  let currentInterval; // Variable to track the current countdown interval
+
+  const timerDisplay = document.querySelector(".timerDisplay");
+  const audio = document.getElementById("alarmAudio");
+
+  resetButton.addEventListener("click", () => {
+    clearInterval(currentInterval); // Clear the current countdown interval
+    timerDisplay.textContent = "00:00:00";
+  });
+
+  minute.addEventListener("click", () => {
+    clearInterval(currentInterval); // Clear the current countdown interval
+    startCountdown(60, timerDisplay, audio, (intervalId) => {
+      currentInterval = intervalId; // Store the current interval ID
+    });
+    console.log("clicked");
+  });
+
+  three.addEventListener("click", () => {
+    clearInterval(currentInterval); // Clear the current countdown interval
+    startCountdown(180, timerDisplay, audio, (intervalId) => {
+      currentInterval = intervalId; // Store the current interval ID
+    });
+    console.log("clicked");
+  });
+
+  five.addEventListener("click", () => {
+    clearInterval(currentInterval); // Clear the current countdown interval
+    startCountdown(300, timerDisplay, audio, (intervalId) => {
+      currentInterval = intervalId; // Store the current interval ID
+    });
+    console.log("clicked");
+  });
+};
+
+const startCountdown = (duration, timerDisplay, audio, onIntervalStart) => {
+  let timeLeft = duration;
+  onIntervalStart(
+    setInterval(() => {
+      const hours = Math.floor(timeLeft / 3600);
+      const minutes = Math.floor((timeLeft % 3600) / 60);
+      const seconds = timeLeft % 60;
+
+      timerDisplay.textContent = `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(currentInterval);
+        audio.play();
+      }
+
+      timeLeft -= 1;
+    }, 1000)
+  );
+};
+
+// Custom Time
+const customTime = () => {
+  
+}
+
+
+// MODAL
+customButton.addEventListener("click", () => {
+  modal.classList.remove("hidden");
+});
+
+modalClose.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+modalSubmit.addEventListener("click", () => {
+  let hours = document.getElementById("hours").value;
+  let minutes = document.getElementById("minutes").value;
+  let seconds = document.getElementById("seconds").value;
+
+  let time = `${hours}:${minutes}:${seconds}`;
+
+  // Convert time to milliseconds
+  let timeInMilliseconds = (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
+
+  // Hide the modal
+  modal.classList.add("hidden");
+
+  // Display the timer countdown
+  const countdown = document.querySelector("timerDisplay");
+  countdown.textContent = time;
+
+  // Start the timer
+  
+});
 
 // Function to hide all pages and show the selected one
 function showPage(pageToShow) {
