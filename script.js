@@ -16,6 +16,11 @@ const modal = document.getElementById("modal");
 const modalClose = document.getElementById("modalClose");
 const modalSubmit = document.getElementById("modalSubmit");
 
+const audio = document.getElementById("alarmAudio");
+const countdown = document.querySelector(".timerDisplay");
+
+
+let timerInterval = null;
 
 // ANALOG CLOCK
 analogLink.addEventListener("click", () => {
@@ -61,15 +66,9 @@ digitalLink.addEventListener("click", () => {
     const digitalTime = document.querySelector(".clock-time");
     const digitalDate = document.querySelector(".clock-date");
     let date = new Date();
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let seconds = date.getSeconds();
-
-    // Add a leading zero to the minutes string if it has a length of 1
-    minutes = minutes.toString().padStart(2, "0");
-
-    // Add a leading zero to the seconds string if it has a length of 1
-    seconds = seconds.toString().padStart(2, "0");
+    let hours = date.getHours().toString().padStart(2, "0"); // Add leading zero to hours
+    let minutes = date.getMinutes().toString().padStart(2, "0"); // Add leading zero to minutes
+    let seconds = date.getSeconds().toString().padStart(2, "0"); // Add leading zero to seconds
 
     let time = `${hours}:${minutes}:${seconds}`;
     digitalTime.textContent = time;
@@ -85,6 +84,7 @@ digitalLink.addEventListener("click", () => {
   setInterval(clock, 1000);
 });
 
+
 // TIMER
 timerLink.addEventListener("click", () => {
   showPage(timerPage);
@@ -94,73 +94,110 @@ timerLink.addEventListener("click", () => {
   timer();
 });
 
-
 const timer = () => {
   const minute = document.querySelector('[value="60"]');
   const three = document.querySelector('[value="180"]');
   const five = document.querySelector('[value="300"]');
   const resetButton = document.getElementById("reset");
-  let currentInterval; // Variable to track the current countdown interval
+  const pauseButton = document.getElementById("pause");
 
   const timerDisplay = document.querySelector(".timerDisplay");
   const audio = document.getElementById("alarmAudio");
 
+  let remainingTime = 0; // Declare remainingTime outside the timer function
+  let isPaused = false;
+
+  pauseButton.addEventListener("click", () => {
+  if (timerDisplay.textContent !== "00:00:00") { // Add this condition
+    if (!isPaused) {
+      clearInterval(timerInterval);
+      if (remainingTime > 0) {
+        remainingTime = parseTimerDisplay(timerDisplay.textContent);
+        pauseButton.textContent = "RESUME";
+        pauseButton.id = "paused"; // Change the id to "paused"
+        isPaused = true;
+      }
+    } else {
+      if (remainingTime > 0) {
+        startCountdown(remainingTime, timerDisplay, audio, (intervalId) => {
+          timerInterval = intervalId; // Update the global timerInterval
+        });
+        pauseButton.textContent = "PAUSE"; // Change the button text back to "PAUSE"
+        pauseButton.id = "pause"; // Change the id back to "pause"
+        isPaused = false;
+      }
+    }
+  }
+});
+
+
+  // Function to parse the timer display text and convert it to seconds
+  function parseTimerDisplay(displayText) {
+    const timeParts = displayText.split(":");
+    const hours = parseInt(timeParts[0], 10) || 0;
+    const minutes = parseInt(timeParts[1], 10) || 0;
+    const seconds = parseInt(timeParts[2], 10) || 0;
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+
   resetButton.addEventListener("click", () => {
-    clearInterval(currentInterval); // Clear the current countdown interval
-    timerDisplay.textContent = "00:00:00";
-  });
+  clearInterval(timerInterval); // Clear the current countdown interval
+  timerDisplay.textContent = "00:00:00";
+
+  // Stop the audio playback
+  audio.pause();
+  audio.currentTime = 0; // Reset the audio to the beginning
+});
 
   minute.addEventListener("click", () => {
-    clearInterval(currentInterval); // Clear the current countdown interval
-    startCountdown(60, timerDisplay, audio, (intervalId) => {
-      currentInterval = intervalId; // Store the current interval ID
+    clearInterval(timerInterval); // Clear the current countdown interval
+    remainingTime = 60; // Set the remaining time to the selected duration
+    startCountdown(remainingTime, timerDisplay, audio, (intervalId) => {
+      timerInterval = intervalId; // Update the global timerInterval
     });
-    console.log("clicked");
   });
 
   three.addEventListener("click", () => {
-    clearInterval(currentInterval); // Clear the current countdown interval
-    startCountdown(180, timerDisplay, audio, (intervalId) => {
-      currentInterval = intervalId; // Store the current interval ID
+    clearInterval(timerInterval); // Clear the current countdown interval
+    remainingTime = 180; // Set the remaining time to the selected duration
+    startCountdown(remainingTime, timerDisplay, audio, (intervalId) => {
+      timerInterval = intervalId; // Update the global timerInterval
     });
-    console.log("clicked");
   });
 
   five.addEventListener("click", () => {
-    clearInterval(currentInterval); // Clear the current countdown interval
-    startCountdown(300, timerDisplay, audio, (intervalId) => {
-      currentInterval = intervalId; // Store the current interval ID
+    clearInterval(timerInterval); // Clear the current countdown interval
+    remainingTime = 300; // Set the remaining time to the selected duration
+    startCountdown(remainingTime, timerDisplay, audio, (intervalId) => {
+      timerInterval = intervalId; // Update the global timerInterval
     });
-    console.log("clicked");
   });
 };
 
+
 const startCountdown = (duration, timerDisplay, audio, onIntervalStart) => {
-  let timeLeft = duration;
-  onIntervalStart(
-    setInterval(() => {
-      const hours = Math.floor(timeLeft / 3600);
-      const minutes = Math.floor((timeLeft % 3600) / 60);
-      const seconds = timeLeft % 60;
+  let currentInterval;
 
-      timerDisplay.textContent = `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  currentInterval = setInterval(() => {
+    if (duration <= 0) {
+      clearInterval(currentInterval);
+      audio.play();
+      timerDisplay.textContent = '00:00:00';
+      return;
+    }
 
-      if (timeLeft <= 0) {
-        clearInterval(currentInterval);
-        audio.play();
-      }
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = duration % 60;
 
-      timeLeft -= 1;
-    }, 1000)
-  );
+    timerDisplay.textContent = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+    duration -= 1;
+  }, 1000);
+
+  onIntervalStart(currentInterval);
 };
 
-// Custom Time
-const customTime = () => {
-  
-}
 
 
 // MODAL
@@ -173,25 +210,29 @@ modalClose.addEventListener("click", () => {
 });
 
 modalSubmit.addEventListener("click", () => {
-  let hours = document.getElementById("hours").value;
-  let minutes = document.getElementById("minutes").value;
-  let seconds = document.getElementById("seconds").value;
+  // Retrieve input values for hours, minutes, and seconds
+  const hours = parseInt(document.getElementById("hours").value, 10) || 0;
+  const minutes = parseInt(document.getElementById("minutes").value, 10) || 0;
+  const seconds = parseInt(document.getElementById("seconds").value, 10) || 0;
 
-  let time = `${hours}:${minutes}:${seconds}`;
+  console.log("Custom time: ", hours, minutes, seconds); // Log the custom time
 
-  // Convert time to milliseconds
-  let timeInMilliseconds = (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
+  // Calculate the total time in milliseconds
+  const timeInMilliseconds = (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
+
+  // Clear the existing timer interval if it exists
+  clearInterval(timerInterval);
 
   // Hide the modal
   modal.classList.add("hidden");
 
-  // Display the timer countdown
-  const countdown = document.querySelector("timerDisplay");
-  countdown.textContent = time;
-
-  // Start the timer
-  
+  // Start the timer with the custom time
+  startCountdown(timeInMilliseconds / 1000, countdown, audio, (intervalId) => {
+    timerInterval = intervalId; // Store the current interval ID
+  });
 });
+
+
 
 // Function to hide all pages and show the selected one
 function showPage(pageToShow) {
@@ -213,5 +254,4 @@ clockFact();
 function clockFact() {
   let randomFact = CLOCKFACTS[Math.floor(Math.random() * CLOCKFACTS.length)];
   document.getElementById("clock-facts").innerHTML = randomFact;
-};
-
+}

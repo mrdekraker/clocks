@@ -182,13 +182,11 @@ main {
   transition: all 0.2s ease-in-out;
 }
 
-#start {
-  background: hsla(114, 99%, 30%, 0.2);
+#paused {
+  background-color: hsla(114, 99%, 50%, 0.2);
 }
-
-#start:hover {
-  background: hsla(114, 99%, 30%, 0.9);
-  color: #1b1b1b;
+#paused:hover {
+  background-color: hsla(114, 99%, 50%, 0.9); /* Change to the color you want on hover */
 }
 
 #pause {
