@@ -215,8 +215,6 @@ modalSubmit.addEventListener("click", () => {
   const minutes = parseInt(document.getElementById("minutes").value, 10) || 0;
   const seconds = parseInt(document.getElementById("seconds").value, 10) || 0;
 
-  console.log("Custom time: ", hours, minutes, seconds); // Log the custom time
-
   // Calculate the total time in milliseconds
   const timeInMilliseconds = (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
 
